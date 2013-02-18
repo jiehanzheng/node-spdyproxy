@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+// uncomment to obtain useful stack traces on exceptions
+// require("long-stack-traces");
+
 var path = require('path')
   , pkg = require('../package.json')
   , version = pkg.version
@@ -68,6 +71,13 @@ var path = require('path')
         alias: 'v',
         description: 'enable verbose logging',
         default: false
+      },
+      requestCert:{
+        demand:false,
+        alias: 'C',
+        description: 'request a certificate from a connecting client',
+        type: 'boolean',
+        default: false
       }
     }).argv;
 
@@ -75,6 +85,7 @@ opts.version = version;
 opts.key = fs.readFileSync(path.resolve(opts.key));
 opts.cert = fs.readFileSync(path.resolve(opts.cert));
 if (opts.ca) opts.ca = fs.readFileSync(path.resolve(opts.ca));
+if (opts.requestCert) opts.rejectUnauthorized=true;
 
 process.on('uncaughtException', function(e) {
   console.error('Error: '.red + e);
